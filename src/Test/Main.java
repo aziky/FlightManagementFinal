@@ -11,6 +11,13 @@ public class Main {
     public static void main(String[] args) throws ParseException, IOException {
         Validation valid = new Validation();
         FlightManagement m = new FlightManagement();
+
+        // read all the information already existed in file
+        // m.readCrew();
+        m.readFlight();
+        m.readReservation();
+        m.readCrew();
+
         int choice = 0;
         do {
             choice = menu();
@@ -58,7 +65,7 @@ public class Main {
                                                 m.addPilot();
                                                 break;
                                             case 2:
-                                                m.addAttendent();
+                                                m.addAttendant();
                                                 break;
                                             case 3:
                                                 m.addStaff();
@@ -69,7 +76,6 @@ public class Main {
                                                 break;
                                         }
                                     } while (choice >= 0 && choice < 5);
-                                    choice = 0;
                                     break;
                                 case 2:
                                     m.manageFlight();
@@ -77,9 +83,8 @@ public class Main {
                             }
                         } while (choice >= 0 && choice < 3);
                     } else {
-                        System.out.println("Wrong format");
+                        System.out.println("Wrong password");
                     }
-                    choice = 0;
                     break;
                 case 5:
                     m.saveEmployee();
@@ -140,7 +145,7 @@ public class Main {
         Validation valid = new Validation();
         System.out.println("           ======================================================");
         System.out.println("            4.1.1 Add Pilot");
-        System.out.println("            4.1.2 Add Attendent");
+        System.out.println("            4.1.2 Add Attendant");
         System.out.println("            4.1.3 Add Ground Staff");
         System.out.println("            4.1.4 Crew assignment");
         System.out.println("            4.1.5 Back to main menu");

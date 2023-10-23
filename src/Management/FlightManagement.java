@@ -15,7 +15,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,8 +22,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class FlightManagement {
 
@@ -82,12 +80,9 @@ public class FlightManagement {
                 } while (valid.checkValidTime2(aTime) == false);
 
                 validTime = valid.checkValidTime(dTime, aTime);
-//                if (validTime == false) {
-//                    System.out.println("Enter Departure Time and Arrival Time again");
-//                }
+
             } while (validTime == false);
 
-//            aSeat = valid.checkString("Enter Available seasts: ");   
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
             Date date1 = format.parse(dTime);
             Date date2 = format.parse(aTime);
@@ -104,12 +99,13 @@ public class FlightManagement {
         } while (getChoice.equalsIgnoreCase("y"));
     }
 
+    // print the information of the flight
     public void showFlight(List<FlightSchedule> m) {
         if (m.isEmpty()) {
             System.out.println("Empty list!");
         } else {
             for (FlightSchedule f : m) {
-                System.out.format("|%-15s|%-15s|%-15s|%-12s|%-12s|%-5d|%-15d|",
+                System.out.format("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15s|%-15s|",
                         f.getfNumber(), f.getDepartCity(), f.getDesCity(), f.getDepartTime(), f.getArrTime(), f.getNumberSeats(), f.getDurationTime());
                 System.out.println("");
             }
@@ -126,9 +122,6 @@ public class FlightManagement {
             System.out.println("Flight List: ");
             for (FlightSchedule f : fList) {
                 if (f.getDepartCity().equalsIgnoreCase(departureCity)) {
-//                    System.out.format("|%-15s|%-15s|%-15s|%-12s|%-12s|%-5d|%-15d|",
-//                            f.getfNumber(), f.getDepartCity(), f.getDesCity(), f.getDepartTime(), f.getArrTime(), f.getNumberSeats(), f.getDurationTime());
-//                    System.out.println("");
                     result.add(f);
                 }
             }
@@ -178,10 +171,7 @@ public class FlightManagement {
     }
 
     public void createBooking() {
-        String dTime;
-        String aTime;
-        boolean validTime = true;
-        boolean validFlight = true;
+       
         String choice;
         if (fList.isEmpty()) {
             System.out.println("There are no flight list");
@@ -195,25 +185,47 @@ public class FlightManagement {
                     ID += "00" + (bList.size() + 1);
                 }
                 String name = valid.checkString("Enter customer name: ");
-                String contact = valid.checkContact("Enter cusomer contact: ", "^[0-9]{9,11}$");
-                String flightNumber = valid.checkStringWithRegrex("Enter the Flight Number: ", "^F\\d{4}$", "Wrong format, please enter (Fxxxx)");
+                String contact = valid.checkContact("Enter customer phone: ", "^[0-9]{9,11}$");
+
+                showFlight(fList);
+                String flightNumber = valid.checkStringWithRegex("Enter the Flight Number: ", "^F\\d{4}$", "Wrong format, please enter (Fxxxx)");
+
                 if (searchByFlightID(flightNumber) == null) {
-                    System.out.println("Can not find Flight so can not add");
+                    System.out.println("Can not find! Flight so can not add");
                 } else {
                     bList.add(new Reservation(name, ID, flightNumber, contact));
                     System.out.println("Add successfully");
                 }
-                choice = valid.checkYesOrNo("Do you want to enter book again?(Y/N)");
+                choice = valid.checkYesOrNo("Do you want to enter book again?(Y/N): ");
                 if (choice.equalsIgnoreCase("n")) {
                     System.out.println("Returning to menu!........");
                     break;
                 }
             } while (choice.equalsIgnoreCase("y"));
+            System.out.format("|%-15s|%-15s|%-15s|%-15s|%-9s|\n", "Name", "Booking ID", "Flight Number", "Phone", "Seat");
             for (Reservation r : bList) {
                 r.print();
             }
         }
     }
+
+    // public void printFlight(){
+    //     if (fList.isEmpty()) {
+    //         System.out.println("There is no Flight!");
+    //     } else {
+    //         System.out.println("==========================================================Flight===============================================================================");
+    //         System.out.printf("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15s|%-15s| \n", "Flight Number", "Departure City",
+    //                 "Destination City", "Departure Time", "Arrival Time", "Available seats", "Duration");
+    //         sortByDate();
+    //         for (FlightSchedule f : fList) {
+    //             System.out.format("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15d|%-15d|",
+    //                     f.getfNumber(), f.getDepartCity(), f.getDesCity(), f.getDepartTime(), f.getArrTime(), f.getNumberSeats(), f.getDurationTime());
+    //             System.out.println("");
+
+    //         }
+    //         System.out.println("");
+    //     }
+    // }
 
     public Reservation searchReservationID(String id) {
         for (Reservation r : bList) {
@@ -248,11 +260,11 @@ public class FlightManagement {
             else {
 
                 FlightSchedule fl = this.searchByFlightID(r.getfNumber());
-                System.out.format("|%-12s|%-12s|%-13s|%-5s|%-10s|%-10s|%-10s|%-10s|",
+                System.out.format("|%-12s|%-12s|%-13s|%-10s|%-17s|%-17s|%-20s|%-20s|",
                         r.getId(), r.getName(), r.getContact(), r.getfNumber(), fl.getDepartCity(), fl.getDesCity(), fl.getDepartTime(), fl.getArrTime());
                 System.out.println("");
 
-                fl.getAvaiableSeats();
+                fl.printSeats();
                 String seat = valid.checkString("Enter seat to choose: ").toUpperCase();
                 fl.setEmptySeatsToSold(seat);
                 for (Reservation res : bList) {
@@ -261,7 +273,7 @@ public class FlightManagement {
                         break;
                     } else if (res.getSeat().equalsIgnoreCase("Not book") && res.getId().equalsIgnoreCase(bookingId)) {
                         r.setSeat(seat);
-                        System.out.println("Successfully Checkin!");
+                        System.out.println("Successfully Check In!");
                     }
                 }
 
@@ -274,17 +286,14 @@ public class FlightManagement {
     }
 
     public void addPilot() {
-
             String pID = valid.checkDuplicateCrew("Please enter Pilot ID: ", "^P\\d{2}$", "Wrong format, please enter (Pxx)", crList);
-
             String pName = valid.checkString("Enter Pilot name: ");
             int pAge = valid.checkIntMinMax("Enter Pilot age (18-65): ", 18, 65);
             crList.add(new Pilot(pID, pName, pAge));
             System.out.println("Add Pilot successfully");
-
     }
 
-    public void addAttendent() {
+    public void addAttendant() {
 
             String aID = valid.checkDuplicateCrew("Please enter Attendant ID: ", "^A\\d{2}$", "Wrong format, please enter (Axx)", crList);
             String aName = valid.checkString("Enter Attendant name: ");
@@ -295,11 +304,7 @@ public class FlightManagement {
     }
 
     public void addStaff() {
-
-
-
             String sID = valid.checkDuplicateCrew("Please enter Staff ID: ", "^S\\d{2}$", "Wrong format, please enter (Sxx)", crList);
-
             String sName = valid.checkString("Enter Staff name: ");
             int sAge = valid.checkIntMinMax("Enter Staff age (18-65): ", 18, 65);
             crList.add(new Staff(sID, sName, sAge));
@@ -376,7 +381,7 @@ public class FlightManagement {
                 String getChoice;
                 //        String enterCrew = valid.checkString("Enter the crew you want to add(Pilot, Attendant, Staff): ");
                 do {
-                    enterPilot = valid.checkStringWithRegrex("Please enter Pilot ID: ", "^P\\d{2}$", "Wrong format, please enter (Pxx)");
+                    enterPilot = valid.checkStringWithRegex("Please enter Pilot ID: ", "^P\\d{2}$", "Wrong format, please enter (Pxx)");
                     Crew p = this.searchByCrewaAss(crList, enterPilot);
                     if (p != null) {
                         pList.add(new Pilot(enterPilot, p.getName(), p.getAge()));
@@ -391,7 +396,7 @@ public class FlightManagement {
                 } while (getChoice.equalsIgnoreCase("y"));
 //-----------------------------------------------------------------------------------------------------------------
                 do {
-                    enterAttendant = valid.checkStringWithRegrex("Please enter Attendant ID: ", "^A\\d{2}$", "Wrong format, please enter (Axx)");
+                    enterAttendant = valid.checkStringWithRegex("Please enter Attendant ID: ", "^A\\d{2}$", "Wrong format, please enter (Axx)");
 
                     Crew a = this.searchByCrewaAss(crList, enterAttendant);
 
@@ -409,7 +414,7 @@ public class FlightManagement {
                 } while (getChoice.equalsIgnoreCase("y"));
 //-----------------------------------------------------------------------------------------------------------------
                 do {
-                    enterStaff = valid.checkStringWithRegrex("Please enter Staff ID: ", "^S\\d{2}$", "Wrong format, please enter (Sxx)");
+                    enterStaff = valid.checkStringWithRegex("Please enter Staff ID: ", "^S\\d{2}$", "Wrong format, please enter (Sxx)");
 
                     Crew s = this.searchByCrewaAss(crList, enterStaff);
                     if (s != null) {
@@ -521,58 +526,58 @@ public class FlightManagement {
             if (fList.isEmpty()) {
                 System.out.println("There is no list");
             } else {
-                String fNumber = valid.checkStringWithRegrex("Enter Flight number to search: ", "^F\\d{4}$", "Wrong format, Please enter (Fxxxx)");
-                FlightSchedule sFlight = this.searchByFlightID(fNumber);
-                if (sFlight == null) {
+                String fNumber = valid.checkStringWithRegex("Enter Flight number to search: ", "^F\\d{4}$", "Wrong format, Please enter (Fxxxx)");
+                FlightSchedule newFlight = searchByFlightID(fNumber);
+                if (newFlight == null) {
                     System.out.println("There is no Flight!");
                 } else {
 
-                    String oldDepCity = sFlight.getDepartCity();
+                    String oldDepCity = newFlight.getDepartCity();
                     String newDepCity = valid.getString("Enter new Departure City: ");
                     if (newDepCity.isBlank()) {
-                        sFlight.setDepartCity(oldDepCity);
+                        newFlight.setDepartCity(oldDepCity);
                     } else {
-                        sFlight.setDepartCity(newDepCity);
+                        newFlight.setDepartCity(newDepCity);
                     }
 
-                    String oldDesCity = sFlight.getDesCity();
+                    String oldDesCity = newFlight.getDesCity();
                     String newDesCity = valid.getString("Enter new Destination City: ");
                     if (newDesCity.isBlank()) {
-                        sFlight.setDesCity(oldDesCity);
+                        newFlight.setDesCity(oldDesCity);
                     } else {
-                        sFlight.setDesCity(newDesCity);
+                        newFlight.setDesCity(newDesCity);
                     }
 
                     do {
-                        String oldDepTime = sFlight.getDepartTime();
-                        String oldArrTime = sFlight.getArrTime();
+                        String oldDepTime = newFlight.getDepartTime();
+                        String oldArrTime = newFlight.getArrTime();
                         newDepTime = valid.getString("Enter Departure Time: ").trim();
                         newArrTime = valid.getString("Enter Arrival Time: ").trim();
                         if (newArrTime.isBlank() && newDepTime.isBlank()) {
-                            validTime = valid.checkValidTime(oldDepTime, oldArrTime);
-                            sFlight.setDepartTime(oldDepTime);
-                            sFlight.setArrTime(oldArrTime);
-                            if (validTime == false) {
-                                System.out.println("Enter Departure Time and Arrival Time again");
-                            }
+                            // validTime = valid.checkValidTime(oldDepTime, oldArrTime);
+                            newFlight.setDepartTime(oldDepTime);
+                            newFlight.setArrTime(oldArrTime);
+                            // if (validTime == false) {
+                            //     System.out.println("Enter Departure Time and Arrival Time again");
+                            // }
                         } else if (newArrTime.isBlank()) {
                             validTime = valid.checkValidTime(newDepTime, oldArrTime);
-                            sFlight.setDepartTime(newDepTime);
-                            sFlight.setArrTime(oldArrTime);
+                            newFlight.setDepartTime(newDepTime);
+                            newFlight.setArrTime(oldArrTime);
                             if (validTime == false) {
                                 System.out.println("Enter Departure Time and Arrival Time again");
                             }
                         } else if (newDepTime.isBlank()) {
                             validTime = valid.checkValidTime(oldDepTime, newArrTime);
-                            sFlight.setDepartTime(oldDepTime);
-                            sFlight.setArrTime(newArrTime);
+                            newFlight.setDepartTime(oldDepTime);
+                            newFlight.setArrTime(newArrTime);
                             if (validTime == false) {
                                 System.out.println("Enter Departure Time and Arrival Time again");
                             }
                         } else {
                             validTime = valid.checkValidTime(newDepTime, newArrTime);
-                            sFlight.setDepartTime(newDepTime);
-                            sFlight.setArrTime(newArrTime);
+                            newFlight.setDepartTime(newDepTime);
+                            newFlight.setArrTime(newArrTime);
                             if (validTime == false) {
                                 System.out.println("Enter Departure Time and Arrival Time again");
                             }
@@ -580,14 +585,15 @@ public class FlightManagement {
                     } while (validTime == false);
 
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-                    Date date1 = format.parse(sFlight.getDepartTime());
-                    Date date2 = format.parse(sFlight.getArrTime());
+                    Date date1 = format.parse(newFlight.getDepartTime());
+                    Date date2 = format.parse(newFlight.getArrTime());
                     int duration = (int) ((date2.getTime() - date1.getTime()) / (60 * 60 * 1000));
-                    sFlight.setDurationTime(duration);
+                    newFlight.setDurationTime(duration);
                 }
             }
 
     }
+
     public void saveFlight() {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\FlightManagement.dat"));
@@ -626,7 +632,7 @@ public class FlightManagement {
                 br.write(line);
             }
             br.close();
-            System.out.println("The Reservation saved successfull");
+            System.out.println("The Reservation saved successfully");
         } catch (Exception e) {
             System.out.println("File error");
         }
@@ -647,7 +653,7 @@ public class FlightManagement {
         }
     }
     public void readEmployee() throws IOException {
-        //  ArrayList<FlightSchedule> flList = new ArrayList<>();
+
         BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\Employee.dat"));
         String line = "";
         while ((line = br.readLine()) != null) {
@@ -657,13 +663,10 @@ public class FlightManagement {
             int age = Integer.parseInt(parts[2].trim());
             crList.add(new Crew(id, name, age));
         }
+        br.close();
 
-//        for (FlightSchedule f : fList) {
-//            f.print();
-//               }
     }
     public void readFlight() throws IOException {
-        //  ArrayList<FlightSchedule> flList = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\FlightManagement.dat"));
         String line = "";
         while ((line = br.readLine()) != null) {
@@ -681,10 +684,8 @@ public class FlightManagement {
             List<String> eSeat = new ArrayList<>(Arrays.asList(seat));
             fList.get(fList.size() - 1).setS(eSeat);
         }
+        br.close();
 
-//        for (FlightSchedule f : fList) {
-//            f.print();
-//               }
     }
 
     public void readReservation() throws IOException {
@@ -703,6 +704,7 @@ public class FlightManagement {
             // reFileList.add(newReservation);
             bList.add(newReservation);
         }
+        br.close();
     }
 
     public void readCrew() {
@@ -768,10 +770,7 @@ public class FlightManagement {
     }
 
     public void printAll() throws IOException, ParseException {
-        readFlight();
-        readReservation();
-        readCrew();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        // SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         if (fList.isEmpty()) {
             System.out.println("There is no Flight!");
         } else {
@@ -814,23 +813,7 @@ public class FlightManagement {
         }
     }
     public void printEmployee() throws IOException, ParseException {
-        readFlight();
-        readEmployee();
-        if (fList.isEmpty()) {
-            System.out.println("There is no Flight!");
-        } else {
-            System.out.println("==========================================================Flight==============================================================================");
-            System.out.printf("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15s|%-15s| \n", "Flight Number", "Departure City",
-                    "Destination City", "Departure Time", "Arrival Time", "Available seats", "Duration");
-            sortByDate();
-            for (FlightSchedule f : fList) {
-                System.out.format("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15d|%-15d|",
-                        f.getfNumber(), f.getDepartCity(), f.getDesCity(), f.getDepartTime(), f.getArrTime(), f.getNumberSeats(), f.getDurationTime());
-                System.out.println("");
-
-            }
-            System.out.println("");
-        }
+        showFlight(fList);
         if (bList.isEmpty()) {
             System.out.println("There is no Employee!");
         } else {
