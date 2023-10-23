@@ -513,87 +513,7 @@ public class FlightManagement {
         }
     }
 
-//    public void crewManagement1() {
-//        ArrayList<Pilot> pList = new ArrayList<>();
-//        ArrayList<Attendant> aList = new ArrayList<>();
-//        ArrayList<Staff> sList = new ArrayList<>();
-//        String passWord = valid.getString("If you are Administrators, please enter password: ");
-//        if (passWord.equals("1234")) {
-//            String flight = valid.checkString("Enter the Flight Number (Fxxxx) you want to add crew: ").toUpperCase().trim();
-//            FlightSchedule fNum = this.searchByFlightID(flight);
-//            CrewM cm = this.searchByCrew(flight);
-//            if (fNum == null) {
-//                System.out.println("There is no Flight");
-//            } else if (cm != null) {
-//                System.out.println("The Crew has been created");
-//            } else {
-////            String getChoice;
-////            do {
-//                //             String enterCrew = valid.checkString("Enter the crew you want to add(Pilot, Attendant, Staff): ");
-//                //           if (enterCrew.equalsIgnoreCase("Pilot")) {
-//                System.out.println("Please enter 2 Pilots!");
-//                do {
-//                    String pID = "";
-//                    pID += "P";
-//                    if (pList.isEmpty()) {
-//                        pID += "001";
-//                    } else {
-//                        pID += "00" + (pList.size() + 1);
-//                    }
-//                    String pName = valid.checkString("Enter Pilot name: ");
-//                    int pAge = valid.checkIntMinMax("Enter Pilot age (18-65): ", 18, 65);
-//                    pList.add(new Pilot(pID, pName, pAge));
-//                } while (pList.size() < 2);
-//                //             }
-//                System.out.println("2 Pilots were added");
-//                System.out.println("Please continue enter 2 Attendants!");
-//                //             if (enterCrew.equalsIgnoreCase("Attendant")) {
-//                do {
-//                    String aID = "";
-//                    aID += "A";
-//                    if (aList.isEmpty()) {
-//                        aID += "001";
-//                    } else {
-//                        aID += "00" + (aList.size() + 1);
-//                    }
-//                    String aName = valid.checkString("Enter Attendant name: ");
-//                    int aAge = valid.checkIntMinMax("Enter Attendant age (18-65): ", 18, 65);
-//                    aList.add(new Attendant(aID, aName, aAge));
-//                } while (aList.size() < 2);
-//                System.out.println("The");
-//                //              }
-//                System.out.println("2 Attendants were added");
-//                System.out.println("Please continue enter 2 Staff!");
-//                //              if (enterCrew.equalsIgnoreCase("Staff")) {
-//                do {
-//                    String sID = "";
-//                    sID += "S";
-//                    if (sList.isEmpty()) {
-//                        sID += "001";
-//                    } else {
-//                        sID += "00" + (sList.size() + 1);
-//                    }
-//                    String sName = valid.checkString("Enter Staff name: ");
-//                    int sAge = valid.checkIntMinMax("Enter Staff age (18-65): ", 18, 65);
-//                    sList.add(new Staff(sID, sName, sAge));
-//                } while (sList.size() < 2);
-//                System.out.println("2 Staff were added");
-////             }
-////                getChoice = valid.checkYesOrNo("Do you want to add more (Y/N)");
-////                if (getChoice.equalsIgnoreCase("n")) {
-//////                    System.out.println("Returning to menu!........");
-////                    break;
-////                }
-////            } while (getChoice.equalsIgnoreCase("y"));
-//                cList.add(new CrewM(flight, pList, aList, sList));
-//                for (CrewM cr : cList) {
-//                    System.out.println(cr.toString());
-//                }
-//            }
-//        } else {
-//            System.out.println("Wrong password");
-//        }
-//    }
+
     public void manageFlight() throws ParseException {
         String newDepTime, newArrTime;
         boolean validTime = true;
@@ -670,7 +590,7 @@ public class FlightManagement {
     }
     public void saveFlight() {
         try {
-            BufferedWriter br = new BufferedWriter(new FileWriter("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\FlightManagement.dat"));
+            BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\FlightManagement.dat"));
             String line;
             for (FlightSchedule f : fList) {
                 line = f.toString() + "\n";
@@ -684,7 +604,7 @@ public class FlightManagement {
     }
     public void saveEmployee() {
         try {
-            BufferedWriter br = new BufferedWriter(new FileWriter("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\Employee.dat"));
+            BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\Employee.dat"));
             String line;
             for (Crew f : crList) {
                 line = f.toString() + "\n";
@@ -699,7 +619,7 @@ public class FlightManagement {
 
     public void saveReservation() {
         try {
-            BufferedWriter br = new BufferedWriter(new FileWriter("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\Reservation.dat"));
+            BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\Reservation.dat"));
             String line;
             for (Reservation r : bList) {
                 line = r.toString() + "\n";
@@ -714,7 +634,7 @@ public class FlightManagement {
 
     public void saveCrew() {
         try {
-            BufferedWriter br = new BufferedWriter(new FileWriter("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\CrewAssignment.dat"));
+            BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\CrewAssignment.dat"));
             String line;
             for (CrewM cm : cList) {
                 line = cm.toString() + "\n";
@@ -728,7 +648,7 @@ public class FlightManagement {
     }
     public void readEmployee() throws IOException {
         //  ArrayList<FlightSchedule> flList = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\Employee.dat"));
+        BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\Employee.dat"));
         String line = "";
         while ((line = br.readLine()) != null) {
             String parts[] = line.split(":");
@@ -744,7 +664,7 @@ public class FlightManagement {
     }
     public void readFlight() throws IOException {
         //  ArrayList<FlightSchedule> flList = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\FlightManagement.dat"));
+        BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\FlightManagement.dat"));
         String line = "";
         while ((line = br.readLine()) != null) {
             String parts[] = line.split(",");
@@ -769,7 +689,7 @@ public class FlightManagement {
 
     public void readReservation() throws IOException {
         //        ArrayList<Reservation> reList = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\Reservation.dat"));
+        BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\Reservation.dat"));
         String line = "";
         Reservation newReservation = null;
         while ((line = br.readLine()) != null) {
@@ -787,7 +707,7 @@ public class FlightManagement {
 
     public void readCrew() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("D:\\FPTUniversity\\Semester3\\LAB211\\FlightManagementFinal\\src\\output\\CrewAssignment.dat"));
+            BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\CrewAssignment.dat"));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -847,41 +767,6 @@ public class FlightManagement {
 
     }
 
-//        if (bList.isEmpty()) {
-//            System.out.println("Empty File!");
-//        }
-//        for (Reservation re : reList) {
-//            re.print();
-//        }
-//    public void readCrew() throws IOException {
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader("D:\\FPT\\LAB211\\J1.L.P0026\\src\\output\\CrewAssignment.dat"));
-//            String line = "";
-//            while ((line = br.readLine()) != null) {
-//                String parts[] = line.split(",");
-//                String fNumber = parts[0].trim();
-//                String pilot = parts[1].trim();
-//                String attendant = parts[2].trim();
-//                String staff = parts[3].trim();
-//
-//                pilot = pilot.substring(1, pilot.length() - 1);
-//                String p[] = pilot.split(",");
-////            for (String pilots : p) {
-////                String pilotParts[] = pilots.split(",");         
-////            }
-//                String pID1 = p[0].trim();
-//                String pName1 = p[1].trim();
-//                int pAge1 = Integer.parseInt(p[3].trim());
-//                String pID2 = p[4].trim();
-//                String pName2 = p[5].trim();
-//                int pAge2 = Integer.parseInt(p[6].trim());
-//
-//            }
-//
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
-//    }
     public void printAll() throws IOException, ParseException {
         readFlight();
         readReservation();
@@ -922,7 +807,8 @@ public class FlightManagement {
             System.out.printf("|%-15s|%-40s|%-40s|%-40s|\n", "Flight Number", "Pilots",
                     "Attendants", "Staffs");
             for (CrewM cm : cList) {
-                cm.print();
+                System.out.printf("|%-15s|%-40s|%-40s|%-40s|\n", cm.getfNumber(), cm.getpList(),
+                    cm.getaList(), cm.getsList());
             }
             System.out.println("");
         }
