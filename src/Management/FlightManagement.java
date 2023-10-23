@@ -2,7 +2,7 @@ package Management;
 
 import Data.Attendant;
 import Data.Crew;
-import Data.CrewM;
+import Data.Employee;
 import Data.FlightSchedule;
 import Data.Pilot;
 import Data.Reservation;
@@ -27,12 +27,11 @@ import java.util.Scanner;
 public class FlightManagement {
 
     private Scanner sc = new Scanner(System.in);
-//    ArrayList<Reservation> reFileList = new ArrayList<>();
-//    ArrayList<FlightSchedule> fFileList = new ArrayList<>();
+
     ArrayList<FlightSchedule> fList;
     ArrayList<Reservation> bList;
     ArrayList<Crew> crList;
-    ArrayList<CrewM> cList;
+    ArrayList<Employee> eList;
     ArrayList<Pilot> pList = new ArrayList<>();
     ArrayList<Attendant> aList = new ArrayList<>();
     ArrayList<Staff> sList = new ArrayList<>();
@@ -41,7 +40,7 @@ public class FlightManagement {
     public String[] seats = {"A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"};
 
     public FlightManagement() {
-        cList = new ArrayList<>();
+        eList = new ArrayList<>();
         crList = new ArrayList<>();
         fList = new ArrayList<>();
         bList = new ArrayList<>();
@@ -209,23 +208,6 @@ public class FlightManagement {
         }
     }
 
-    // public void printFlight(){
-    //     if (fList.isEmpty()) {
-    //         System.out.println("There is no Flight!");
-    //     } else {
-    //         System.out.println("==========================================================Flight===============================================================================");
-    //         System.out.printf("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15s|%-15s| \n", "Flight Number", "Departure City",
-    //                 "Destination City", "Departure Time", "Arrival Time", "Available seats", "Duration");
-    //         sortByDate();
-    //         for (FlightSchedule f : fList) {
-    //             System.out.format("|%-15s|%-15s|%-18s|%-20s|%-20s|%-15d|%-15d|",
-    //                     f.getfNumber(), f.getDepartCity(), f.getDesCity(), f.getDepartTime(), f.getArrTime(), f.getNumberSeats(), f.getDurationTime());
-    //             System.out.println("");
-
-    //         }
-    //         System.out.println("");
-    //     }
-    // }
 
     public Reservation searchReservationID(String id) {
         for (Reservation r : bList) {
@@ -313,8 +295,8 @@ public class FlightManagement {
         }
 
 
-    public CrewM searchByCrew(String id) {
-        for (CrewM cm : cList) {
+    public Employee searchByCrew(String id) {
+        for (Employee cm : eList) {
             if (cm.getfNumber().equalsIgnoreCase(id)) {
                 return cm;
             }
@@ -372,7 +354,7 @@ public class FlightManagement {
 
             String flight = valid.checkString("Enter the Flight Number (Fxxxx) you want to add crew: ").toUpperCase().trim();
             FlightSchedule fNum = this.searchByFlightID(flight);
-            CrewM cm = this.searchByCrew(flight);
+            Employee cm = this.searchByCrew(flight);
             if (fNum == null) {
                 System.out.println("There is no Flight");
             } else if (cm != null) {
@@ -432,11 +414,11 @@ public class FlightManagement {
                 sta = this.searchByStaff(sList, enterStaff);
                 att = this.searchByAtt(aList, enterAttendant);
                 if (pilot != null && att != null && sta != null) {
-                    cList.add(new CrewM(flight, pList, aList, sList));
+                    eList.add(new Employee(flight, pList, aList, sList));
                 } else {
                     System.out.println("Cannot add Crew to Flight");
                 }
-                for (CrewM cr : cList) {
+                for (Employee cr : eList) {
                     System.out.println(cr.toString());
                 }
             }
@@ -451,7 +433,7 @@ public class FlightManagement {
         if (passWord.equals("1234")) {
             String flight = valid.checkString("Enter the Flight Number (Fxxxx) you want to add crew: ").toUpperCase().trim();
             FlightSchedule fNum = this.searchByFlightID(flight);
-            CrewM cm = this.searchByCrew(flight);
+            Employee cm = this.searchByCrew(flight);
             if (fNum == null) {
                 System.out.println("There is no Flight");
             } else if (cm != null) {
@@ -506,8 +488,8 @@ public class FlightManagement {
                         break;
                     }
                 } while (getChoice.equalsIgnoreCase("y"));
-                cList.add(new CrewM(flight, pList, aList, sList));
-                for (CrewM cr : cList) {
+                eList.add(new Employee(flight, pList, aList, sList));
+                for (Employee cr : eList) {
                     System.out.println(cr.toString());
                 }
 
@@ -591,7 +573,6 @@ public class FlightManagement {
                     newFlight.setDurationTime(duration);
                 }
             }
-
     }
 
     public void saveFlight() {
@@ -608,12 +589,13 @@ public class FlightManagement {
             System.out.println("File error");
         }
     }
+
     public void saveEmployee() {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\Employee.dat"));
             String line;
-            for (Crew f : crList) {
-                line = f.toString() + "\n";
+            for (Employee e : eList) {
+                line = e.toString() + "\n";
                 br.write(line);
             }
             br.close();
@@ -642,7 +624,7 @@ public class FlightManagement {
         try {
             BufferedWriter br = new BufferedWriter(new FileWriter(System.getProperty("user.dir") +"\\src\\output\\CrewAssignment.dat"));
             String line;
-            for (CrewM cm : cList) {
+            for (Employee cm : eList) {
                 line = cm.toString() + "\n";
                 br.write(line);
             }
@@ -652,6 +634,8 @@ public class FlightManagement {
             System.out.println("File error");
         }
     }
+
+
     public void readEmployee() throws IOException {
 
         BufferedReader br = new BufferedReader(new FileReader(System.getProperty("user.dir") +"\\src\\output\\Employee.dat"));
@@ -758,8 +742,8 @@ public class FlightManagement {
                     staffList.add(s);
                 }
 
-                CrewM importCrew1 = new CrewM(id, pilotList, attendantList, staffList);
-                cList.add(importCrew1);
+                Employee importCrew1 = new Employee(id, pilotList, attendantList, staffList);
+                eList.add(importCrew1);
             }
 
             br.close();
@@ -799,13 +783,13 @@ public class FlightManagement {
             System.out.println("");
         }
 
-        if (cList.isEmpty()) {
+        if (eList.isEmpty()) {
             System.out.println("There is no Crew!");
         } else {
             System.out.println("===========================================================Crew================================================================================");
             System.out.printf("|%-15s|%-40s|%-40s|%-40s|\n", "Flight Number", "Pilots",
                     "Attendants", "Staffs");
-            for (CrewM cm : cList) {
+            for (Employee cm : eList) {
                 System.out.printf("|%-15s|%-40s|%-40s|%-40s|\n", cm.getfNumber(), cm.getpList(),
                     cm.getaList(), cm.getsList());
             }
@@ -814,17 +798,19 @@ public class FlightManagement {
     }
     public void printEmployee() throws IOException, ParseException {
         showFlight(fList);
-        if (bList.isEmpty()) {
+
+        if (eList.isEmpty()) {
             System.out.println("There is no Employee!");
         } else {
             System.out.println("========================================================Employee============================================================================");
-            System.out.printf("|%-15s|%-15s|%-7s| \n", "Employee ID", "Name", "Age");
-            for (Crew b : crList) {
-                b.printEmployee();
+            System.out.printf("|%-15s|%-15s|%-15s|%-7s| \n", "Flight Number","Employee ID", "Name", "Age");
+            for (Employee e : eList) {
+                e.print();
             }
             System.out.println("");
         }
     }
+
     public void sortByDate() {
         Collections.sort(fList, new Comparator<FlightSchedule>() {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");

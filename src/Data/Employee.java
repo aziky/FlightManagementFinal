@@ -3,22 +3,22 @@ package Data;
 
 import java.util.List;
 
-public class CrewM {
+public class Employee {
     private String fNumber;
     private List<Pilot> pList;
     private List<Attendant> aList;
-    private List<Staff>sList;
+    private List<Staff> sList;
 
-    public CrewM() {
+    public Employee() {
     }
 
-    public CrewM( List<Pilot> pList, List<Attendant> aList, List<Staff> sList) {
+    public Employee(List<Pilot> pList, List<Attendant> aList, List<Staff> sList) {
         this.pList = pList;
         this.aList = aList;
         this.sList = sList;
     }
-    
-    public CrewM(String fNumber, List<Pilot> pList, List<Attendant> aList, List<Staff> sList) {
+
+    public Employee(String fNumber, List<Pilot> pList, List<Attendant> aList, List<Staff> sList) {
         this.fNumber = fNumber;
         this.pList = pList;
         this.aList = aList;
@@ -59,10 +59,31 @@ public class CrewM {
 
     @Override
     public String toString() {
-        return fNumber + "; " + pList + "; " + aList + "; " + sList  ;
+        return fNumber + "; " + pList + "; " + aList + "; " + sList;
     }
+
+    private void printPilot() {
+        for (Pilot p : pList) {
+            System.out.printf("|%-15s|%-15s|%-15s|%-7s| \n",fNumber, p.getId(), p.getName(), p.getAge());
+        }
+    }
+
+    private void printAttendant() {
+        for (Attendant a : aList) {
+            System.out.printf("|%-15s|%-15s|%-15s|%-7s| \n",fNumber, a.getId(), a.getName(), a.getAge());
+        }
+    }
+
+    private void printStaff() {
+        for (Staff s : sList) {
+            System.out.printf("|%-15s|%-15s|%-15s|%-7s| \n",fNumber, s.getId(), s.getName(), s.getAge());
+        }
+    }
+
     public void print() {
-         System.out.format("|%-15s|%-28s|%-28s|%-44s|", fNumber, pList, aList, sList);
+       printPilot();
+       printAttendant();
+       printStaff();
     }
-    
+
 }
